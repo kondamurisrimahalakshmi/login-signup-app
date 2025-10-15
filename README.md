@@ -1,24 +1,24 @@
 # Login & Signup Application
 
-A modern, responsive login and signup application built with HTML, CSS, JavaScript, Node.js, Express, and MongoDB Atlas.
+A modern, responsive login and signup application built with HTML, CSS, JavaScript, Node.js, Express, and Supabase Authentication.
 
 ## Features
 
-- 🔐 **Secure Authentication**: JWT-based authentication with bcrypt password hashing
+- 🔐 **Secure Authentication**: Supabase Auth with built-in security
 - 🎨 **Modern UI**: Beautiful orange-themed design with smooth animations
 - 📱 **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
 - 🔒 **Password Security**: Strong password validation with strength indicator
 - 🚀 **Real-time Validation**: Instant form validation and user feedback
-- 🌐 **MongoDB Atlas**: Cloud database integration for user management
+- 🌐 **Supabase**: Cloud authentication and database integration
 - 📊 **Dashboard**: Protected user dashboard with profile information
+- 📈 **Admin Dashboard**: User analytics and login activity tracking
 
 ## Tech Stack
 
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Backend**: Node.js, Express.js
-- **Database**: MongoDB Atlas
-- **Authentication**: JWT (JSON Web Tokens)
-- **Password Hashing**: bcryptjs
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+ modules)
+- **Backend**: Node.js, Express.js (static file server)
+- **Database & Auth**: Supabase
+- **Authentication**: Supabase Auth
 - **Styling**: Custom CSS with orange color theme
 
 ## Live Demo
@@ -31,7 +31,6 @@ A modern, responsive login and signup application built with HTML, CSS, JavaScri
 
 - Node.js (v14 or higher)
 - npm or yarn
-- MongoDB Atlas account
 
 ### 1. Clone the Repository
 
@@ -48,19 +47,7 @@ npm install
 
 ### 3. Environment Configuration
 
-1. Copy the example environment file:
-```bash
-cp env.example .env
-```
-
-2. Update the `.env` file with your configuration:
-```env
-NODE_ENV=development
-PORT=3000
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
-MONGODB_URI=mongodb+srv://subhashkrish66_db_user:Kondamuri%401@subhash1.uvonm7n.mongodb.net/login_signup_db?retryWrites=true&w=majority
-DB_NAME=login_signup_db
-```
+The Supabase credentials are pre-configured in the `.env` file. The application is ready to use out of the box.
 
 ### 4. Start the Application
 
@@ -76,27 +63,34 @@ npm start
 
 The application will be available at `http://localhost:3000`
 
-## MongoDB Atlas Setup
+## Supabase Configuration
 
-1. Create a MongoDB Atlas account at [mongodb.com](https://www.mongodb.com/atlas)
-2. Create a new cluster
-3. Create a database user with read/write permissions
-4. Whitelist your IP address (or use 0.0.0.0/0 for development)
-5. Get your connection string and update the `MONGODB_URI` in your `.env` file
+The application uses Supabase for authentication. The credentials are configured in:
+- `supabase-client.js` - Client configuration
+- `.env` - Environment variables
 
-## API Endpoints
+Authentication is handled entirely client-side using Supabase Auth.
 
-### Authentication
-- `POST /api/signup` - Create a new user account
-- `POST /api/login` - Authenticate user and get JWT token
-- `POST /api/logout` - Logout user (client-side token removal)
+## Authentication Flow
 
-### User Management
-- `GET /api/profile` - Get user profile (requires authentication)
-- `GET /api/verify-token` - Verify JWT token validity
+The application uses Supabase Auth for all authentication operations:
 
-### System
-- `GET /api/health` - Health check endpoint
+### Signup
+- User submits name, email, and password
+- `supabase.auth.signUp()` creates new user account
+- User metadata stores the name
+- Redirects to login page on success
+
+### Login
+- User submits email and password
+- `supabase.auth.signInWithPassword()` authenticates user
+- Session token stored in localStorage
+- Redirects to StudyCast application
+
+### Session Management
+- Sessions managed by Supabase Auth
+- Client-side token storage
+- Automatic session refresh
 
 ## Deployment
 
@@ -146,19 +140,22 @@ vercel
 login-signup-app/
 ├── index.html          # Main login/signup page
 ├── dashboard.html      # User dashboard
+├── admin.html          # Admin dashboard
 ├── styles.css          # CSS styles
-├── script.js           # Frontend JavaScript
-├── server.js           # Express server
+├── script.js           # Frontend JavaScript (ES6 module)
+├── supabase-client.js  # Supabase client configuration
+├── server.js           # Express server (static file server)
 ├── package.json        # Dependencies and scripts
+├── .env                # Environment variables
 ├── .gitignore          # Git ignore rules
-├── env.example         # Environment variables example
 └── README.md           # Project documentation
 ```
 
 ## Security Features
 
-- ✅ Password hashing with bcrypt (12 salt rounds)
-- ✅ JWT token authentication
+- ✅ Supabase Auth with built-in security
+- ✅ Secure password hashing (handled by Supabase)
+- ✅ Session token management
 - ✅ Input validation and sanitization
 - ✅ CORS protection
 - ✅ Environment variable protection
@@ -194,10 +191,12 @@ If you have any questions or need help, please:
 ## Acknowledgments
 
 - Font Awesome for icons
-- MongoDB Atlas for cloud database
+- Supabase for authentication and database services
 - Express.js community for excellent documentation
 - All contributors who helped improve this project
 
 ---
 
-**Note**: Remember to change the JWT secret and MongoDB connection string in production!
+## Migration from MongoDB to Supabase
+
+This application has been migrated from MongoDB Atlas to Supabase Authentication. For migration details, see `MIGRATION_NOTES.md`.

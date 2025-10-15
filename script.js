@@ -1,3 +1,5 @@
+import { supabase } from './supabase-client.js';
+
 // DOM Elements
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
@@ -6,22 +8,8 @@ const signupFormElement = document.getElementById('signupFormElement');
 const messageContainer = document.getElementById('messageContainer');
 const message = document.getElementById('message');
 
-// API base URL configuration
-// - If served by the Node server locally or on Render, keep same-origin (empty string)
-// - If on static hosting (e.g., GitHub Pages), set window.API_BASE_URL to your backend URL
-const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL)
-    || '';
-
-function apiUrl(path) {
-    if (!API_BASE_URL) return path; // same-origin
-    // Ensure single slash between base and path
-    const base = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
-    const p = path.startsWith('/') ? path : `/${path}`;
-    return `${base}${p}`;
-}
-
 // Form switching functions
-function showSignup() {
+window.showSignup = function() {
     loginForm.classList.add('hidden');
     signupForm.classList.remove('hidden');
     clearMessages();
@@ -29,7 +17,7 @@ function showSignup() {
     document.getElementById('adminLink').style.display = 'block';
 }
 
-function showLogin() {
+window.showLogin = function() {
     signupForm.classList.add('hidden');
     loginForm.classList.remove('hidden');
     clearMessages();
@@ -38,10 +26,10 @@ function showLogin() {
 }
 
 // Password visibility toggle
-function togglePassword(inputId) {
+window.togglePassword = function(inputId) {
     const input = document.getElementById(inputId);
     const icon = input.nextElementSibling;
-    
+
     if (input.type === 'password') {
         input.type = 'text';
         icon.classList.remove('fa-eye');
@@ -144,33 +132,36 @@ function trackLoginActivity(email, name) {
 // API authentication functions
 async function loginUser(email, password) {
     try {
-        const response = await fetch(apiUrl('/api/login'), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password })
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
         });
 
-        const data = await response.json();
+        if (error) {
+            showMessage(error.message || 'Login failed. Please try again.', 'error');
+            throw error;
+        }
 
-        if (response.ok) {
-            // Store token and user data
-            localStorage.setItem('authToken', data.token);
-            localStorage.setItem('currentUser', JSON.stringify(data.user));
-            
+        if (data && data.user) {
+            // Store user data
+            const user = {
+                id: data.user.id,
+                email: data.user.email,
+                name: data.user.user_metadata?.name || email.split('@')[0]
+            };
+
+            localStorage.setItem('authToken', data.session.access_token);
+            localStorage.setItem('currentUser', JSON.stringify(user));
+
             // Track login activity
-            trackLoginActivity(data.user.email, data.user.name);
-            
+            trackLoginActivity(user.email, user.name);
+
             showMessage('Login successful! Redirecting to StudyCast...', 'success');
             setTimeout(() => {
                 window.location.href = 'https://studycast-1.onrender.com/';
             }, 2000);
-            
-            return { success: true, token: data.token };
-        } else {
-            showMessage(data.message || 'Login failed. Please try again.', 'error');
-            throw new Error(data.message || 'Login failed');
+
+            return { success: true, token: data.session.access_token };
         }
     } catch (error) {
         console.error('Login error:', error);
@@ -181,25 +172,27 @@ async function loginUser(email, password) {
 
 async function signupUser(name, email, password) {
     try {
-        const response = await fetch(apiUrl('/api/signup'), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name, email, password })
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    name: name
+                }
+            }
         });
 
-        const data = await response.json();
+        if (error) {
+            showMessage(error.message || 'Signup failed. Please try again.', 'error');
+            throw error;
+        }
 
-        if (response.ok) {
+        if (data && data.user) {
             showMessage('Account created successfully! Please sign in.', 'success');
             setTimeout(() => {
                 showLogin();
             }, 2000);
             return { success: true, user: data.user };
-        } else {
-            showMessage(data.message || 'Signup failed. Please try again.', 'error');
-            throw new Error(data.message || 'Signup failed');
         }
     } catch (error) {
         console.error('Signup error:', error);
