@@ -127,85 +127,71 @@ function trackLoginActivity(email, name) {
     }
 }
 
-// Client-side authentication functions (for GitHub Pages deployment)
-function loginUser(email, password) {
-    return new Promise((resolve, reject) => {
-        // Simulate API delay
-        setTimeout(() => {
-            // Get stored users from localStorage
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
+// API authentication functions
+async function loginUser(email, password) {
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Store token and user data
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('currentUser', JSON.stringify(data.user));
             
-            // Find user by email
-            const user = users.find(u => u.email === email);
+            // Track login activity
+            trackLoginActivity(data.user.email, data.user.name);
             
-            if (user && user.password === password) {
-                // Create a simple token
-                const token = btoa(JSON.stringify({ 
-                    userId: user.id, 
-                    email: user.email, 
-                    timestamp: Date.now() 
-                }));
-                
-                // Store token
-                localStorage.setItem('authToken', token);
-                localStorage.setItem('currentUser', JSON.stringify({
-                    id: user.id,
-                    name: user.name,
-                    email: user.email
-                }));
-                
-                // Track login activity
-                trackLoginActivity(user.email, user.name);
-                
-                showMessage('Login successful! Redirecting to StudyCast...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'https://studycast-1.onrender.com/';
-                }, 2000);
-                resolve({ success: true, token });
-            } else {
-                showMessage('Invalid email or password.', 'error');
-                reject({ success: false, message: 'Invalid credentials' });
-            }
-        }, 1000);
-    });
+            showMessage('Login successful! Redirecting to dashboard...', 'success');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+            
+            return { success: true, token: data.token };
+        } else {
+            showMessage(data.message || 'Login failed. Please try again.', 'error');
+            throw new Error(data.message || 'Login failed');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showMessage('Network error. Please check your connection.', 'error');
+        throw error;
+    }
 }
 
-function signupUser(name, email, password) {
-    return new Promise((resolve, reject) => {
-        // Simulate API delay
-        setTimeout(() => {
-            // Get stored users from localStorage
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
-            // Check if user already exists
-            const existingUser = users.find(u => u.email === email);
-            
-            if (existingUser) {
-                showMessage('User with this email already exists.', 'error');
-                reject({ success: false, message: 'User already exists' });
-                return;
-            }
-            
-            // Create new user
-            const newUser = {
-                id: Date.now().toString(),
-                name: name,
-                email: email,
-                password: password, // In real app, this would be hashed
-                createdAt: new Date().toISOString()
-            };
-            
-            // Add to users array
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            
+async function signupUser(name, email, password) {
+    try {
+        const response = await fetch('/api/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
             showMessage('Account created successfully! Please sign in.', 'success');
             setTimeout(() => {
                 showLogin();
             }, 2000);
-            resolve({ success: true, user: newUser });
-        }, 1000);
-    });
+            return { success: true, user: data.user };
+        } else {
+            showMessage(data.message || 'Signup failed. Please try again.', 'error');
+            throw new Error(data.message || 'Signup failed');
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+        showMessage('Network error. Please check your connection.', 'error');
+        throw error;
+    }
 }
 
 // Form submission handlers
