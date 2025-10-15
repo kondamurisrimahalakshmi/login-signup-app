@@ -89,3 +89,6 @@ Thumbs.db
 # Build directories
 dist/
 build/
+
+# Exclude nested git repositories
+studycast-login/

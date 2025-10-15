@@ -23,7 +23,7 @@ A modern, responsive login and signup application built with HTML, CSS, JavaScri
 
 ## Live Demo
 
-[View Live Demo](https://mahalakshmi.github.io/login-signup-app)
+[View Live Demo](https://kondamurisrimahalakshmi.github.io/login-signup-app)
 
 ## Installation & Setup
 
@@ -36,7 +36,7 @@ A modern, responsive login and signup application built with HTML, CSS, JavaScri
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/mahalakshmi/login-signup-app.git
+git clone https://github.com/kondamurisrimahalakshmi/login-signup-app.git
 cd login-signup-app
 ```
 
@@ -106,7 +106,7 @@ The application will be available at `http://localhost:3000`
 2. Go to repository Settings > Pages
 3. Select source as "Deploy from a branch"
 4. Choose "main" branch and "/ (root)" folder
-5. Your site will be available at `https://mahalakshmi.github.io/login-signup-app`
+5. Your site will be available at `https://kondamurisrimahalakshmi.github.io/login-signup-app`
 
 ### Full Stack Deployment (Heroku)
 
@@ -187,7 +187,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 
-1. Check the [Issues](https://github.com/mahalakshmi/login-signup-app/issues) page
+1. Check the [Issues](https://github.com/kondamurisrimahalakshmi/login-signup-app/issues) page
 2. Create a new issue if your problem isn't already reported
 3. Contact the maintainer
 
