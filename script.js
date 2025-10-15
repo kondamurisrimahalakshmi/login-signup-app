@@ -148,9 +148,9 @@ async function loginUser(email, password) {
             // Track login activity
             trackLoginActivity(data.user.email, data.user.name);
             
-            showMessage('Login successful! Redirecting to dashboard...', 'success');
+            showMessage('Login successful! Redirecting to StudyCast...', 'success');
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = 'https://studycast-1.onrender.com/';
             }, 2000);
             
             return { success: true, token: data.token };
