@@ -6,6 +6,20 @@ const signupFormElement = document.getElementById('signupFormElement');
 const messageContainer = document.getElementById('messageContainer');
 const message = document.getElementById('message');
 
+// API base URL configuration
+// - If served by the Node server locally or on Render, keep same-origin (empty string)
+// - If on static hosting (e.g., GitHub Pages), set window.API_BASE_URL to your backend URL
+const API_BASE_URL = (typeof window !== 'undefined' && window.API_BASE_URL)
+    || '';
+
+function apiUrl(path) {
+    if (!API_BASE_URL) return path; // same-origin
+    // Ensure single slash between base and path
+    const base = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+    const p = path.startsWith('/') ? path : `/${path}`;
+    return `${base}${p}`;
+}
+
 // Form switching functions
 function showSignup() {
     loginForm.classList.add('hidden');
@@ -130,7 +144,7 @@ function trackLoginActivity(email, name) {
 // API authentication functions
 async function loginUser(email, password) {
     try {
-        const response = await fetch('/api/login', {
+        const response = await fetch(apiUrl('/api/login'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -167,7 +181,7 @@ async function loginUser(email, password) {
 
 async function signupUser(name, email, password) {
     try {
-        const response = await fetch('/api/signup', {
+        const response = await fetch(apiUrl('/api/signup'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
