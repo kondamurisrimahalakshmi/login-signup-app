@@ -1,0 +1,21 @@
+# Render Deployment Configuration
+# This file helps configure your app for Render deployment
+
+# Build Command (if needed)
+# npm install
+
+# Start Command
+npm start
+
+# Environment Variables needed in Render Dashboard:
+# NODE_ENV=production
+# PORT=10000 (or let Render auto-assign)
+# JWT_SECRET=your-super-secure-jwt-secret-key-change-this-in-production-2024
+# MONGODB_URI=mongodb+srv://subhashkrish66_db_user:Kondamuri%401@subhash1.uvonm7n.mongodb.net/login_signup_db?retryWrites=true&w=majority
+
+# Additional Render Settings:
+# - Runtime: Node.js
+# - Build Command: npm install
+# - Start Command: npm start
+# - Root Directory: / (root)
+# - Auto-Deploy: Yes (from main branch)
