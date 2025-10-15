@@ -12,8 +12,10 @@
 - **Name**: `login-signup-app` (or your preferred name)
 - **Runtime**: `Node`
 - **Build Command**: `npm install`
-- **Start Command**: `npm start`
+- **Start Command**: `npm start` (NOT `node start`)
 - **Root Directory**: `/` (leave empty for root)
+
+**⚠️ IMPORTANT**: Make sure the Start Command is exactly `npm start` and NOT `node start`
 
 ### 3. Set Environment Variables
 Click "Advanced" → "Environment Variables" and add:
@@ -57,10 +59,13 @@ MONGODB_URI = mongodb+srv://subhashkrish66_db_user:Kondamuri%401@subhash1.uvonm7
 ## Troubleshooting
 
 ### Common Issues:
-1. **MongoDB Connection Error**: Check IP whitelist in Atlas
-2. **Build Failures**: Ensure all dependencies are in package.json
-3. **Environment Variables**: Double-check variable names and values
-4. **Static Files**: Verify file paths are correct
+1. **"Cannot find module '/opt/render/project/src/start'" Error**: 
+   - This happens when Start Command is set to `node start` instead of `npm start`
+   - **Solution**: Change Start Command to `npm start` in Render dashboard
+2. **MongoDB Connection Error**: Check IP whitelist in Atlas
+3. **Build Failures**: Ensure all dependencies are in package.json
+4. **Environment Variables**: Double-check variable names and values
+5. **Static Files**: Verify file paths are correct
 
 ### Render Logs:
 - Go to your service dashboard
